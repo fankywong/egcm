@@ -5,6 +5,7 @@ importFrom("methods", "is")
 importFrom("pracma", "hurstexp")
 importFrom("stats", "Box.test", "approx", "coef", "cov", "lm", "pbinom", "pt",
            "quantile", "rnorm", "runif", "sd", "var")
+importFrom("tls")
 
 # Main functions
 export(egcm, 
