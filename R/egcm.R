@@ -582,10 +582,14 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     	alpha <- coef(L)[1,1]
     	beta <- coef(L)[2,1]  
 	S2b=S2-beta
-	alpha=tls(S2b~S1+0)$coefficient
+	datadf=data.frame(S2b,S1)
+	colnames(datadf)=c("S2b","S1")
+	alpha=tls(S2b~S1+0,data=datadf)$coefficient
 	L$residuals=as.numeric(S2b-beta*S1)
     } else {
-        L <- summary(tls(S2~S1+0))
+	datadf=data.frame(S2b,S1)
+	colnames(datadf)=c("S2b","S1")
+        L <- summary(tls(S2~S1+0,data=datadf))
     	alpha <- 0
     	beta <- coef(L)[1,1]    
 	L[["residuals"]]=S2-beta*S1
