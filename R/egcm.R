@@ -632,10 +632,10 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     	beta.se <- tlsfit$sd.est
     } else {
         alpha.se <- 0
-        beta.se <- coef(L)[1,2]
+        beta.se <- tlsfit$sd.est
     }
 	
-	rho.se <- coef(LR)[1,2]
+	rho.se <- LR$sd.est
 #	rho.se <- rho_se(length(eps), rho) * sd(R)
 
 	i1testfunc <- function(X) {
