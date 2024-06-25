@@ -584,14 +584,16 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
 	S2b=S2-beta
 	datadf=data.frame(S2b,S1)
 	colnames(datadf)=c("S2b","S1")
-	alpha=tls(S2b~S1+0,data=datadf)$coefficient
+	tlsfit=tls(S2b~S1+0,data=datadf)
+	beta=tlsfit$coefficient
 	L$residuals=as.numeric(S2b-beta*S1)
     } else {
 	datadf=data.frame(S2b,S1)
 	colnames(datadf)=c("S2b","S1")
-        L <- summary(tls(S2~S1+0,data=datadf))
+        tlsfit <- tls(S2~S1+0,data=datadf)
+	L <- summary(lm(S2~S1+0))
     	alpha <- 0
-    	beta <- coef(L)[1,1]    
+    	beta <- tlsfit$coefficient 
 	L[["residuals"]]=S2-beta*S1
     }
     
@@ -600,8 +602,10 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     FR <- R[2:N]
     BR <- L$residuals[1:(N-1)]
     if (!robust) {
-    	LR <- summary(tls(FR ~ BR + 0))
-    	rho.raw <- coef(LR)[1,1]
+	datadf=data.frame(FR,BR)
+	colnames(datadf)=c("FR","BR")
+    	LR <- tls(FR ~ BR + 0,data=datadf)
+    	rho.raw <- LR$coefficient
     } else {
     	LR <- summary(rlm(FR ~ BR + 0))
     	rho.raw <- coef(LR)[1]
@@ -625,7 +629,7 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     	# however simulation shows that the standard errors computed by lm() seem
     	# to be too small.  Perhaps a correction based on the var(eps) needs to
     	# be included here as well?
-    	beta.se <- coef(L)[2,2]
+    	beta.se <- tlsfit$sd.est
     } else {
         alpha.se <- 0
         beta.se <- coef(L)[1,2]
