@@ -578,11 +578,11 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     	alpha <- 0
     	beta <- coef(L)[1,1]       
     } else if (include.const) {
-        L <- summary(lm(S2~S1))
+        L <- summary(tls(S2~S1))
     	alpha <- coef(L)[1,1]
     	beta <- coef(L)[2,1]        
     } else {
-        L <- summary(lm(S2~S1+0))
+        L <- summary(tls(S2~S1+0))
     	alpha <- 0
     	beta <- coef(L)[1,1]    
     }
@@ -592,7 +592,7 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     FR <- R[2:N]
     BR <- L$residuals[1:(N-1)]
     if (!robust) {
-    	LR <- summary(lm(FR ~ BR + 0))
+    	LR <- summary(tls(FR ~ BR + 0))
     	rho.raw <- coef(LR)[1,1]
     } else {
     	LR <- summary(rlm(FR ~ BR + 0))
