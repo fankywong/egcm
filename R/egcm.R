@@ -578,13 +578,17 @@ egcm <- function (X, Y, na.action, log=FALSE, normalize=FALSE, debias=TRUE, robu
     	alpha <- 0
     	beta <- coef(L)[1,1]       
     } else if (include.const) {
-        L <- summary(tls(S2~S1))
+        L <- summary(lm(S2~S1))
     	alpha <- coef(L)[1,1]
-    	beta <- coef(L)[2,1]        
+    	beta <- coef(L)[2,1]  
+	S2b=S2-beta
+	alpha=tls(S2b~S1+0)$coefficient
+	L$residuals=as.numeric(S2b-beta*S1)
     } else {
         L <- summary(tls(S2~S1+0))
     	alpha <- 0
     	beta <- coef(L)[1,1]    
+	L[["residuals"]]=S2-beta*S1
     }
     
     N <- length(L$residuals)
